@@ -1,0 +1,12 @@
+services:
+  pluto:
+    container_name: pluto
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: yarn start:prod
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=production
+      - PORT=3000

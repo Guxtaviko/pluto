@@ -1,0 +1,14 @@
+services:
+  pluto:
+    container_name: pluto
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
+    command: yarn start:dev
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    
