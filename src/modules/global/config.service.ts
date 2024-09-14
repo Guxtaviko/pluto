@@ -3,8 +3,11 @@ import { ZodSchema } from 'zod'
 export class ConfigService<T extends Record<string, unknown>> {
   private readonly envVars: T
 
-  constructor(private readonly envSchema: ZodSchema<T>) {
-    const validation = this.envSchema.safeParse(process.env)
+  constructor(
+    private readonly envSchema: ZodSchema<T>,
+    values?: T,
+  ) {
+    const validation = this.envSchema.safeParse(values ?? process.env)
 
     if (!validation.success) {
       throw new Error(`Config validation error(s): ${validation.error.message}`)
