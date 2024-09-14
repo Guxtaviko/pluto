@@ -26,8 +26,11 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-fastify": "^10.4.1",
     "@nestjs/swagger": "^7.4.0",
+    "@prisma/client": "^5.19.1",
     "@scalar/nestjs-api-reference": "^0.3.150",
+    "argon2": "^0.41.1",
     "nestjs-zod": "^3.0.0",
+    "prisma": "^5.19.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "zod": "^3.23.8"

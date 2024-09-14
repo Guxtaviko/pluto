@@ -1,13 +1,14 @@
+import { Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify'
-import { Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { docsBuilder, docsOptions, EnvConfig } from './config'
 import { SwaggerModule } from '@nestjs/swagger'
+import { AppModule } from './app.module'
+import { docsBuilder, docsOptions, EnvConfig } from './config'
+import { ZodValidationPipe } from 'nestjs-zod'
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap')
@@ -17,6 +18,7 @@ async function bootstrap() {
     AppModule,
     adapter,
   )
+  app.useGlobalPipes(new ZodValidationPipe())
 
   const configService = app.get<ConfigService<EnvConfig>>(ConfigService)
 
