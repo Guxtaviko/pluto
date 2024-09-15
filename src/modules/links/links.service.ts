@@ -9,6 +9,12 @@ export class LinksService {
     private readonly linksRepository: LinksRepository,
   ) {}
 
+  async findByShortUrl(shortUrl: string) {
+    const link = await this.linksRepository.findByShortUrl(shortUrl)
+
+    return link
+  }
+
   async createLink(url: string, userId?: string) {
     const shortUrl = await this.shorteningService.generateShortUrl(url)
 
