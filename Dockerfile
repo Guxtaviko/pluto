@@ -9,7 +9,11 @@ COPY package*.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
+COPY prisma ./prisma
+
 COPY . .
+
+RUN npx prisma generate
 
 CMD ["yarn", "start:dev"]
 
@@ -24,7 +28,11 @@ COPY package*.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile --production
 
+COPY prisma ./prisma
+
 COPY . .
+
+RUN npx prisma generate
 
 RUN yarn build
 
