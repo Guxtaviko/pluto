@@ -34,7 +34,7 @@ export class RtAuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_SECRET'),
+        secret: this.configService.get('JWT_RT_SECRET'),
       })
 
       request.token = token

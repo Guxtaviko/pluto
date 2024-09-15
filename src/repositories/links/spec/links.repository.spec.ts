@@ -137,4 +137,43 @@ describe('LinksRepository', () => {
       data: { deletedAt: expect.any(Date) },
     })
   })
+
+  it('should register a click', async () => {
+    jest.spyOn(prisma.link, 'update').mockResolvedValue({} as Link)
+
+    await repository.registerClick('1')
+    expect(prisma.link.update).toHaveBeenCalledWith({
+      where: { id: '1' },
+      data: { clicks: { increment: 1 } },
+    })
+  })
+
+  it('should get user links with pagination', async () => {
+    const links = [
+      {
+        id: '1',
+        url: 'http://example.com',
+        shortUrl: 'exmpl',
+        userId: 'user1',
+        deletedAt: null,
+      },
+      {
+        id: '2',
+        url: 'http://example2.com',
+        shortUrl: 'exmpl2',
+        userId: 'user1',
+        deletedAt: null,
+      },
+    ] as Link[]
+    jest.spyOn(prisma.link, 'findMany').mockResolvedValue(links)
+
+    expect(await repository.userLinks('user1', { limit: 2, offset: 0 })).toBe(
+      links,
+    )
+    expect(prisma.link.findMany).toHaveBeenCalledWith({
+      where: { userId: 'user1' },
+      take: 2,
+      skip: 0,
+    })
+  })
 })

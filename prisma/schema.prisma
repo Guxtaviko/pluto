@@ -29,6 +29,7 @@ model Link {
   id        String   @id @default(cuid())
   url       String
   shortUrl  String   @unique
+  clicks    Int      @default(0)
   userId    String?
   user      User?     @relation(fields: [userId], references: [id])
   deletedAt DateTime?

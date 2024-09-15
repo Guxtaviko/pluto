@@ -7,5 +7,6 @@ import { LinksService } from './links.service'
 @Module({
   controllers: [LinksController],
   providers: [LinksService, ShorteningService, LinksRepository, PrismaService],
+  exports: [LinksService],
 })
 export class LinksModule {}
