@@ -13,4 +13,6 @@ export abstract class UsersContract {
   abstract update(id: string, data: { name?: string }): Promise<User>
 
   abstract delete(id: string): Promise<User>
+
+  abstract updateRtHash(id: string, rtHash: string): Promise<User>
 }

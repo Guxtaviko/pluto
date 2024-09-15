@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { GlobalModule, UsersModule } from './modules'
+import { AuthModule, GlobalModule } from './modules'
 
 @Module({
-  imports: [GlobalModule, UsersModule],
+  imports: [GlobalModule, AuthModule],
   controllers: [],
   providers: [],
 })

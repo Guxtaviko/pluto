@@ -10,14 +10,22 @@ export class UsersService {
     private readonly hashService: HashService,
   ) {}
 
+  async getById(id: string) {
+    const user = await this.usersRepository.findById(id)
+
+    return user
+  }
+
   async getUserByEmail(email: string) {
     const user = await this.usersRepository.findByEmail(email)
 
     return user
   }
 
-  async createUser(user: CreateUserDto) {
-    const password = await this.hashService.hash(user.password)
+  async createUser(user: CreateUserDto, hashPassword = true) {
+    const password = hashPassword
+      ? await this.hashService.hash(user.password)
+      : user.password
 
     const newUser = await this.usersRepository.create({
       ...user,
@@ -33,5 +41,9 @@ export class UsersService {
 
     const deletedUser = await this.usersRepository.delete(id)
     return deletedUser
+  }
+
+  async updateRtHash(id: string, rtHash: string | null) {
+    return this.usersRepository.updateRtHash(id, rtHash)
   }
 }

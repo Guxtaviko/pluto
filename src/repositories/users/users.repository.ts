@@ -53,4 +53,15 @@ export class UsersRepository implements UsersContract {
       },
     })
   }
+
+  async updateRtHash(id: string, rtHash: string | null): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        rtHash,
+      },
+    })
+  }
 }

@@ -16,6 +16,11 @@ export class HashService {
     return hashed
   }
 
+  /**
+   *
+   * @param {Compare} { digest, hash } - digest is the plain text password and hash is the hashed password
+   * @returns
+   */
   async compare({ digest, hash }: Compare): Promise<boolean> {
     if (!digest || !hash) throw new Error('Digest and hash are required')
 
