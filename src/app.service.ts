@@ -7,7 +7,7 @@ export class AppService {
 
   async redirect(shortUrl: string): Promise<string> {
     const link = await this.linksService.findByShortUrl(shortUrl)
-    if (!link) throw new NotFoundException('Link not found')
+    if (!link || link?.deletedAt) throw new NotFoundException('Link not found')
 
     await this.linksService.registerClick(link.id)
 

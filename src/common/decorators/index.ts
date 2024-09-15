@@ -4,3 +4,4 @@ export * from './auth/auth.decorator'
 
 export * from './extractors/current-user.decorator'
 export * from './extractors/domain.decorator'
+export * from './extractors/refresh-token.decorator'

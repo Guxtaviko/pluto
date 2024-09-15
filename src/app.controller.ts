@@ -14,6 +14,6 @@ export class AppController {
     @Param('shortUrl') shortUrl: string,
   ) {
     const url = await this.appService.redirect(shortUrl)
-    res.redirect(url, 301)
+    res.redirect(url, 302)
   }
 }
