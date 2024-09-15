@@ -3,6 +3,7 @@ import { ConfigService } from './config.service'
 import { EnvConfig, envSchema } from 'src/config'
 import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
+import { z } from 'zod'
 
 @Global()
 @Module({
@@ -19,7 +20,10 @@ import { JwtModule } from '@nestjs/jwt'
   providers: [
     {
       provide: ConfigService,
-      useValue: new ConfigService(envSchema),
+      useValue:
+        process.env.NODE_ENV === 'test'
+          ? new ConfigService(z.object({}), {})
+          : new ConfigService(envSchema),
     },
   ],
   exports: [ConfigService, JwtModule],
