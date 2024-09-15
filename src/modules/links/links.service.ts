@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { ShorteningService } from 'src/common/providers'
 import { LinksRepository } from 'src/repositories'
 
@@ -25,5 +25,12 @@ export class LinksService {
     })
 
     return link
+  }
+
+  async registerClick(id: string) {
+    const exists = await this.linksRepository.findById(id)
+    if (!exists) throw new NotFoundException('Link not found')
+
+    await this.linksRepository.registerClick(id)
   }
 }

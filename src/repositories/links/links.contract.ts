@@ -12,4 +12,14 @@ export abstract class LinksContract {
   abstract update(id: string, data: { url?: string }): Promise<Link>
 
   abstract delete(id: string): Promise<Link>
+
+  abstract registerClick(id: string): Promise<void>
+
+  abstract userLinks(
+    userId: string,
+    filters: {
+      limit?: number
+      offset?: number
+    },
+  ): Promise<Link[]>
 }

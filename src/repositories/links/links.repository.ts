@@ -64,4 +64,36 @@ export class LinksRepository implements LinksContract {
       },
     })
   }
+
+  async registerClick(id: string): Promise<void> {
+    await this.prisma.link.update({
+      where: {
+        id,
+      },
+      data: {
+        clicks: {
+          increment: 1,
+        },
+      },
+    })
+  }
+
+  async userLinks(
+    userId: string,
+    {
+      limit,
+      offset,
+    }: {
+      limit?: number
+      offset?: number
+    },
+  ): Promise<Link[]> {
+    return this.prisma.link.findMany({
+      where: {
+        userId,
+      },
+      take: limit,
+      skip: offset,
+    })
+  }
 }

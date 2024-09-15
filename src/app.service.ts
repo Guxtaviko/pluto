@@ -9,6 +9,8 @@ export class AppService {
     const link = await this.linksService.findByShortUrl(shortUrl)
     if (!link) throw new NotFoundException('Link not found')
 
+    await this.linksService.registerClick(link.id)
+
     return link.url
   }
 }
