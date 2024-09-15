@@ -1,14 +1,15 @@
 import { User } from '@prisma/client'
 
 export abstract class UsersContract {
+  abstract findById(id: string): Promise<User | null>
+
+  abstract findByEmail(email: string): Promise<User | null>
+
   abstract create(data: {
     email: string
     password: string
     name?: string
   }): Promise<User>
-  abstract findById(id: string): Promise<User | null>
-
-  abstract findByEmail(email: string): Promise<User | null>
 
   abstract update(id: string, data: { name?: string }): Promise<User>
 
