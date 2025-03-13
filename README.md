@@ -27,7 +27,7 @@ Pluto is a simple URL shortener application built with Nest.js. It allows users 
 
 This will build the Docker images and start the application along with any required services (e.g., database).
 
-### Manual Instalation:
+### Manual Installation:
 1. **Clone the repository**:
     ```bash
     $ git clone https://github.com/Guxtaviko/pluto.git
@@ -52,7 +52,7 @@ This will build the Docker images and start the application along with any requi
     $ npx prisma migrate dev
     ```
 
-6. **Start the aplication**
+6. **Start the application**
     ```bash
     # development
     $ yarn run start
