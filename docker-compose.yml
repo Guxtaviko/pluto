@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: yarn start:migrate:prod
+    command: pnpm start:migrate:prod
     restart: unless-stopped
     ports:
       - 3000:3000
