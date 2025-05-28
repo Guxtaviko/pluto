@@ -11,11 +11,16 @@ export const docsBuilder = new DocumentBuilder()
   .setVersion(version)
   .addBearerAuth()
 
-export const docsOptions = (document: OpenAPIObject) =>
+export const docsOptions: (document: OpenAPIObject) => unknown = (
+  document: OpenAPIObject,
+) =>
   apiReference({
     theme: 'kepler',
     withFastify: true,
     spec: {
       content: document,
+    },
+    metaData: {
+      title: 'Pluto API Reference',
     },
   })

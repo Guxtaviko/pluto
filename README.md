@@ -36,7 +36,7 @@ This will build the Docker images and start the application along with any requi
 
 2. **Install dependencies**:
     ```bash
-    $ yarn install
+    $ pnpm install
     ```
 
 3. **Set up environment variables:**
@@ -55,13 +55,13 @@ This will build the Docker images and start the application along with any requi
 6. **Start the application**
     ```bash
     # development
-    $ yarn run start
+    $ pnpm run start
 
     # watch mode
-    $ yarn run start:dev
+    $ pnpm run start:dev
 
     # production mode
-    $ yarn run start:prod
+    $ pnpm run start:prod
     ```
 
 ## Features

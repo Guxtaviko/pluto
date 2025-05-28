@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { HashService } from './hash.service'
 import * as argon from 'argon2'
+import { vi, describe, it, expect, beforeEach, afterAll } from 'vitest'
 
-jest.mock('argon2')
+vi.mock('argon2')
 
 describe('HashService', () => {
-  const { hash, verify } = argon as jest.Mocked<typeof argon>
+  const { hash, verify } = argon as vi.Mocked<typeof argon>
 
   let service: HashService
 
@@ -18,7 +19,7 @@ describe('HashService', () => {
   })
 
   afterAll(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should be defined', () => {

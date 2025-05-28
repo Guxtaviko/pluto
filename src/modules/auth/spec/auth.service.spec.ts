@@ -9,6 +9,7 @@ import { RegisterDto } from '../dto/register-dto'
 import { LoginDto } from '../dto/login-dto'
 import { EnvConfig } from 'src/config'
 import { User } from '@prisma/client'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 describe('AuthService', () => {
   let authService: AuthService
@@ -24,29 +25,29 @@ describe('AuthService', () => {
         {
           provide: UsersService,
           useValue: {
-            getUserByEmail: jest.fn(),
-            createUser: jest.fn(),
-            updateRtHash: jest.fn(),
-            getById: jest.fn(),
+            getUserByEmail: vi.fn(),
+            createUser: vi.fn(),
+            updateRtHash: vi.fn(),
+            getById: vi.fn(),
           },
         },
         {
           provide: HashService,
           useValue: {
-            hash: jest.fn(),
-            compare: jest.fn(),
+            hash: vi.fn(),
+            compare: vi.fn(),
           },
         },
         {
           provide: JwtService,
           useValue: {
-            signAsync: jest.fn(),
+            signAsync: vi.fn(),
           },
         },
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn(),
+            get: vi.fn(),
           },
         },
       ],
@@ -58,7 +59,7 @@ describe('AuthService', () => {
     jwtService = module.get<JwtService>(JwtService)
     configService = module.get<ConfigService<EnvConfig>>(ConfigService)
 
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
+    vi.spyOn(configService, 'get').mockImplementation((key: string) => {
       if (key === 'JWT_RT_SECRET') return 'testRtSecret'
       if (key === 'JWT_RT_EXPIRES_IN') return '3600s'
 
@@ -68,7 +69,7 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should throw an error if email is already taken', async () => {
-      jest.spyOn(usersService, 'getUserByEmail').mockResolvedValueOnce({
+      vi.spyOn(usersService, 'getUserByEmail').mockResolvedValueOnce({
         id: '1',
       } as User)
 
@@ -80,9 +81,9 @@ describe('AuthService', () => {
     })
 
     it('should create a new user', async () => {
-      jest.spyOn(usersService, 'getUserByEmail').mockResolvedValueOnce(null)
-      jest.spyOn(hashService, 'hash').mockResolvedValueOnce('hashedPassword')
-      jest
+      vi.spyOn(usersService, 'getUserByEmail').mockResolvedValueOnce(null)
+      vi.spyOn(hashService, 'hash').mockResolvedValueOnce('hashedPassword')
+      vi
         .spyOn(usersService, 'createUser')
         .mockResolvedValueOnce({ id: '1', email: 'test@test.com' } as User)
 
@@ -96,7 +97,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should throw an error if credentials are invalid', async () => {
-      jest.spyOn(usersService, 'getUserByEmail').mockResolvedValueOnce(null)
+      vi.spyOn(usersService, 'getUserByEmail').mockResolvedValueOnce(null)
 
       const dto: LoginDto = { email: 'test@test.com', password: 'password' }
 
@@ -111,15 +112,15 @@ describe('AuthService', () => {
         email: 'test@test.com',
         password: 'hashedPassword',
       }
-      jest
+      vi
         .spyOn(usersService, 'getUserByEmail')
         .mockResolvedValueOnce(user as User)
-      jest.spyOn(hashService, 'compare').mockResolvedValueOnce(true)
-      jest
+      vi.spyOn(hashService, 'compare').mockResolvedValueOnce(true)
+      vi
         .spyOn(jwtService, 'signAsync')
         .mockResolvedValueOnce('accessToken')
         .mockResolvedValueOnce('refreshToken')
-      jest
+      vi
         .spyOn(authService, 'updateRtHash')
         .mockResolvedValueOnce(null as unknown as User)
 
@@ -136,7 +137,7 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should update refresh token hash to null', async () => {
-      jest
+      vi
         .spyOn(authService, 'updateRtHash')
         .mockResolvedValueOnce(null as unknown as User)
 
@@ -148,7 +149,7 @@ describe('AuthService', () => {
 
   describe('refresh', () => {
     it('should throw an error if refresh token is invalid', async () => {
-      jest.spyOn(usersService, 'getById').mockResolvedValueOnce(null)
+      vi.spyOn(usersService, 'getById').mockResolvedValueOnce(null)
 
       await expect(authService.refresh('1', 'invalidToken')).rejects.toThrow(
         UnauthorizedException,
@@ -157,13 +158,13 @@ describe('AuthService', () => {
 
     it('should return new tokens if refresh token is valid', async () => {
       const user = { id: '1', email: 'test@test.com', rtHash: 'hashedRt' }
-      jest.spyOn(usersService, 'getById').mockResolvedValueOnce(user as User)
-      jest.spyOn(hashService, 'compare').mockResolvedValueOnce(true)
-      jest
+      vi.spyOn(usersService, 'getById').mockResolvedValueOnce(user as User)
+      vi.spyOn(hashService, 'compare').mockResolvedValueOnce(true)
+      vi
         .spyOn(jwtService, 'signAsync')
         .mockResolvedValueOnce('newAccessToken')
         .mockResolvedValueOnce('newRefreshToken')
-      jest
+      vi
         .spyOn(authService, 'updateRtHash')
         .mockResolvedValueOnce(null as unknown as User)
 
