@@ -1,41 +1,49 @@
-# Development stage
-FROM node:20-alpine as development
-ARG NODE_ENV=development
-ENV NODE_ENV=${NODE_ENV}
+FROM node:alpine AS development
 
 WORKDIR /usr/src/app
 
-COPY package*.json yarn.lock ./
+# Install system dependencies
+RUN apk add --no-cache openssl
 
-RUN yarn install --frozen-lockfile
+# Copy package files and install dependencies (using npm, pnpm, or yarn)
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+RUN \
+  if [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm install; \
+  elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  else npm install; fi
 
-COPY prisma ./prisma
 
+# Copy the rest of the application code
 COPY . .
 
+# Generate Prisma client
 RUN npx prisma generate
 
-CMD ["yarn", "start:dev"]
+CMD ["npm", "run", "start:dev"]
 
-# Production stage
-FROM node:20-alpine as production
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+FROM node:alpine AS production
 
 WORKDIR /usr/src/app
 
-COPY package*.json yarn.lock ./
+# Install system dependencies
+RUN apk add --no-cache openssl
 
-RUN yarn install --frozen-lockfile --production
+# Copy package files and install dependencies (using npm, pnpm, or yarn)
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+RUN \
+  if [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm install; \
+  elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  else npm install; fi
 
-COPY prisma ./prisma
-
+# Copy the rest of the application code
 COPY . .
 
+# Generate Prisma client
 RUN npx prisma generate
 
-RUN yarn build
+# Build the application
+RUN npm run build
 
-EXPOSE ${PORT}
-
-CMD ["yarn", "start:prod"]
+CMD ["npm", "run", "start:prod"]

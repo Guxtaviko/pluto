@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { PrismaService } from 'src/common/providers'
 import { LinksRepository } from '../links.repository'
 import { Link } from '@prisma/client'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 describe('LinksRepository', () => {
   let repository: LinksRepository
@@ -15,10 +16,10 @@ describe('LinksRepository', () => {
           provide: PrismaService,
           useValue: {
             link: {
-              findUnique: jest.fn(),
-              findMany: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
+              findUnique: vi.fn(),
+              findMany: vi.fn(),
+              create: vi.fn(),
+              update: vi.fn(),
             },
           },
         },
@@ -37,7 +38,7 @@ describe('LinksRepository', () => {
       userId: 'user1',
       deletedAt: null,
     } as Link
-    jest.spyOn(prisma.link, 'findUnique').mockResolvedValue(link)
+    vi.spyOn(prisma.link, 'findUnique').mockResolvedValue(link)
 
     expect(await repository.findById('1')).toBe(link)
     expect(prisma.link.findUnique).toHaveBeenCalledWith({ where: { id: '1' } })
@@ -51,7 +52,7 @@ describe('LinksRepository', () => {
       userId: 'user1',
       deletedAt: null,
     } as Link
-    jest.spyOn(prisma.link, 'findUnique').mockResolvedValue(link)
+    vi.spyOn(prisma.link, 'findUnique').mockResolvedValue(link)
 
     expect(await repository.findByShortUrl('exmpl')).toBe(link)
     expect(prisma.link.findUnique).toHaveBeenCalledWith({
@@ -76,7 +77,7 @@ describe('LinksRepository', () => {
         deletedAt: null,
       },
     ] as Link[]
-    jest.spyOn(prisma.link, 'findMany').mockResolvedValue(links)
+    vi.spyOn(prisma.link, 'findMany').mockResolvedValue(links)
 
     expect(await repository.findByUserId('user1')).toBe(links)
     expect(prisma.link.findMany).toHaveBeenCalledWith({
@@ -97,7 +98,7 @@ describe('LinksRepository', () => {
       shortUrl: 'exmpl',
       userId: 'user1',
     }
-    jest.spyOn(prisma.link, 'create').mockResolvedValue(link)
+    vi.spyOn(prisma.link, 'create').mockResolvedValue(link)
 
     expect(await repository.create(data)).toBe(link)
     expect(prisma.link.create).toHaveBeenCalledWith({ data })
@@ -112,7 +113,7 @@ describe('LinksRepository', () => {
       deletedAt: null,
     } as Link
     const data = { url: 'http://newexample.com' }
-    jest.spyOn(prisma.link, 'update').mockResolvedValue(link)
+    vi.spyOn(prisma.link, 'update').mockResolvedValue(link)
 
     expect(await repository.update('1', data)).toBe(link)
     expect(prisma.link.update).toHaveBeenCalledWith({
@@ -129,7 +130,7 @@ describe('LinksRepository', () => {
       userId: 'user1',
       deletedAt: new Date(),
     } as Link
-    jest.spyOn(prisma.link, 'update').mockResolvedValue(link)
+    vi.spyOn(prisma.link, 'update').mockResolvedValue(link)
 
     expect(await repository.delete('1')).toBe(link)
     expect(prisma.link.update).toHaveBeenCalledWith({
@@ -139,7 +140,7 @@ describe('LinksRepository', () => {
   })
 
   it('should register a click', async () => {
-    jest.spyOn(prisma.link, 'update').mockResolvedValue({} as Link)
+    vi.spyOn(prisma.link, 'update').mockResolvedValue({} as Link)
 
     await repository.registerClick('1')
     expect(prisma.link.update).toHaveBeenCalledWith({
@@ -165,7 +166,7 @@ describe('LinksRepository', () => {
         deletedAt: null,
       },
     ] as Link[]
-    jest.spyOn(prisma.link, 'findMany').mockResolvedValue(links)
+    vi.spyOn(prisma.link, 'findMany').mockResolvedValue(links)
 
     expect(await repository.userLinks('user1', { limit: 2, offset: 0 })).toBe(
       links,

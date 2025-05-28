@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { PrismaService } from 'src/common/providers'
 import { UsersRepository } from '../users.repository'
 import { User } from '@prisma/client'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 describe('UsersRepository', () => {
   let usersRepository: UsersRepository
@@ -15,10 +16,10 @@ describe('UsersRepository', () => {
           provide: PrismaService,
           useValue: {
             user: {
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
+              findUnique: vi.fn(),
+              create: vi.fn(),
+              update: vi.fn(),
+              delete: vi.fn(),
             },
           },
         },
@@ -42,13 +43,13 @@ describe('UsersRepository', () => {
         name: 'Test',
         rtHash: null,
       } as User
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'findUnique').mockResolvedValue(user)
 
       expect(await usersRepository.findById('1')).toEqual(user)
     })
 
     it('should return null if user not found', async () => {
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null)
+      vi.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null)
 
       expect(await usersRepository.findById('1')).toBeNull()
     })
@@ -63,13 +64,13 @@ describe('UsersRepository', () => {
         name: 'Test',
         rtHash: null,
       } as User
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'findUnique').mockResolvedValue(user)
 
       expect(await usersRepository.findByEmail('test@test.com')).toEqual(user)
     })
 
     it('should return null if user not found', async () => {
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null)
+      vi.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null)
 
       expect(await usersRepository.findByEmail('test@test.com')).toBeNull()
     })
@@ -84,7 +85,7 @@ describe('UsersRepository', () => {
         name: 'Test',
         rtHash: null,
       } as User
-      jest.spyOn(prismaService.user, 'create').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'create').mockResolvedValue(user)
 
       expect(
         await usersRepository.create({
@@ -105,7 +106,7 @@ describe('UsersRepository', () => {
         name: 'Updated Test',
         rtHash: null,
       } as User
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'update').mockResolvedValue(user)
 
       expect(
         await usersRepository.update('1', { name: 'Updated Test' }),
@@ -122,7 +123,7 @@ describe('UsersRepository', () => {
         name: 'Test',
         rtHash: null,
       } as User
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'update').mockResolvedValue(user)
 
       expect(await usersRepository.delete('1')).toEqual(user)
     })
@@ -137,7 +138,7 @@ describe('UsersRepository', () => {
         name: 'Test',
         rtHash: 'newHash',
       } as User
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'update').mockResolvedValue(user)
 
       expect(await usersRepository.updateRtHash('1', 'newHash')).toEqual(user)
     })
@@ -150,7 +151,7 @@ describe('UsersRepository', () => {
         name: 'Test',
         rtHash: null,
       } as User
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(user)
+      vi.spyOn(prismaService.user, 'update').mockResolvedValue(user)
 
       expect(await usersRepository.updateRtHash('1', null)).toEqual(user)
     })

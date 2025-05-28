@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ShorteningService } from '../shortening.service'
 import { LinksRepository } from 'src/repositories'
 import { Link } from '@prisma/client'
+import { describe, beforeEach, it, vi } from 'vitest'
 
 describe('ShorteningService', () => {
   let service: ShorteningService
@@ -14,7 +15,7 @@ describe('ShorteningService', () => {
         {
           provide: LinksRepository,
           useValue: {
-            findByShortUrl: jest.fn(),
+            findByShortUrl: vi.fn(),
           },
         },
       ],
@@ -43,7 +44,7 @@ describe('ShorteningService', () => {
   describe('generateShortUrl', () => {
     it('should generate a short URL', async () => {
       const longUrl = 'https://example.com'
-      jest.spyOn(linksRepository, 'findByShortUrl').mockResolvedValue(null)
+      vi.spyOn(linksRepository, 'findByShortUrl').mockResolvedValue(null)
 
       const shortUrl = await service.generateShortUrl(longUrl)
       expect(shortUrl).toHaveLength(service['SHORT_URL_LENGTH'])
@@ -51,7 +52,7 @@ describe('ShorteningService', () => {
 
     it('should retry if short URL already exists', async () => {
       const longUrl = 'https://example.com'
-      jest
+      vi
         .spyOn(linksRepository, 'findByShortUrl')
         .mockResolvedValueOnce({ shortUrl: 'exists' } as Link)
         .mockResolvedValue(null)

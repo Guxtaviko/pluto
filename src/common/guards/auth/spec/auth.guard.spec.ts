@@ -10,6 +10,7 @@ import { FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { EnvConfig } from 'src/config'
 import { Reflector } from '@nestjs/core'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 describe('AuthGuard', () => {
   let authGuard: AuthGuard
@@ -37,11 +38,11 @@ describe('AuthGuard', () => {
       switchToHttp: () => ({
         getRequest: () => mockRequest,
       }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
+      getHandler: vi.fn(),
+      getClass: vi.fn(),
     } as unknown as ExecutionContext
 
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(true)
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue(true)
 
     const result = await authGuard.canActivate(mockContext)
     expect(result).toBe(true)
@@ -59,13 +60,13 @@ describe('AuthGuard', () => {
       switchToHttp: () => ({
         getRequest: () => mockRequest,
       }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
+      getHandler: vi.fn(),
+      getClass: vi.fn(),
     } as unknown as ExecutionContext
 
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
-    jest.spyOn(jwtService, 'verifyAsync').mockResolvedValue({ userId: 1 })
-    jest.spyOn(configService, 'get').mockReturnValue('secret')
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
+    vi.spyOn(jwtService, 'verifyAsync').mockResolvedValue({ userId: 1 })
+    vi.spyOn(configService, 'get').mockReturnValue('secret')
 
     const result = await authGuard.canActivate(mockContext)
     expect(result).toBe(true)
@@ -81,11 +82,11 @@ describe('AuthGuard', () => {
       switchToHttp: () => ({
         getRequest: () => mockRequest,
       }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
+      getHandler: vi.fn(),
+      getClass: vi.fn(),
     } as unknown as ExecutionContext
 
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
 
     await expect(authGuard.canActivate(mockContext)).rejects.toThrow(
       UnauthorizedException,
@@ -103,15 +104,15 @@ describe('AuthGuard', () => {
       switchToHttp: () => ({
         getRequest: () => mockRequest,
       }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
+      getHandler: vi.fn(),
+      getClass: vi.fn(),
     } as unknown as ExecutionContext
 
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
-    jest
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
+    vi
       .spyOn(jwtService, 'verifyAsync')
       .mockRejectedValue(new Error('Invalid token'))
-    jest.spyOn(configService, 'get').mockReturnValue('secret')
+    vi.spyOn(configService, 'get').mockReturnValue('secret')
 
     await expect(authGuard.canActivate(mockContext)).rejects.toThrow(
       UnauthorizedException,
@@ -129,14 +130,14 @@ describe('AuthGuard', () => {
       switchToHttp: () => ({
         getRequest: () => mockRequest,
       }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
+      getHandler: vi.fn(),
+      getClass: vi.fn(),
     } as unknown as ExecutionContext
 
     const tokenExpiredError = new TokenExpiredError('jwt expired', new Date())
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
-    jest.spyOn(jwtService, 'verifyAsync').mockRejectedValue(tokenExpiredError)
-    jest.spyOn(configService, 'get').mockReturnValue('secret')
+    vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false)
+    vi.spyOn(jwtService, 'verifyAsync').mockRejectedValue(tokenExpiredError)
+    vi.spyOn(configService, 'get').mockReturnValue('secret')
 
     await expect(authGuard.canActivate(mockContext)).rejects.toThrow(
       HttpException,

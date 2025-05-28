@@ -2,6 +2,7 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common'
 import { ShorteningService } from 'src/common/providers'
 import { LinksRepository } from 'src/repositories'
 import { LinksService } from '../links.service'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 describe('LinksService', () => {
   let linksService: LinksService
@@ -10,16 +11,16 @@ describe('LinksService', () => {
 
   beforeEach(() => {
     linksRepository = {
-      findByShortUrl: jest.fn(),
-      create: jest.fn(),
-      findById: jest.fn(),
-      registerClick: jest.fn(),
-      userLinks: jest.fn(),
-      delete: jest.fn(),
-      update: jest.fn(),
+      findByShortUrl: vi.fn(),
+      create: vi.fn(),
+      findById: vi.fn(),
+      registerClick: vi.fn(),
+      userLinks: vi.fn(),
+      delete: vi.fn(),
+      update: vi.fn(),
     } as any
     shorteningService = {
-      generateShortUrl: jest.fn(),
+      generateShortUrl: vi.fn(),
     } as any
     linksService = new LinksService(shorteningService, linksRepository)
   })
@@ -28,7 +29,7 @@ describe('LinksService', () => {
     it('should return a link', async () => {
       const shortUrl = 'shortUrl'
       const link = { id: '1', url: 'http://example.com', shortUrl }
-      ;(linksRepository.findByShortUrl as jest.Mock).mockResolvedValue(link)
+      ;(linksRepository.findByShortUrl as vi.Mock).mockResolvedValue(link)
 
       const result = await linksService.findByShortUrl(shortUrl)
       expect(result).toEqual(link)
@@ -42,10 +43,10 @@ describe('LinksService', () => {
       const shortUrl = 'shortUrl'
       const userId = 'userId'
       const link = { id: '1', url, shortUrl, userId }
-      ;(shorteningService.generateShortUrl as jest.Mock).mockResolvedValue(
+      ;(shorteningService.generateShortUrl as vi.Mock).mockResolvedValue(
         shortUrl,
       )
-      ;(linksRepository.create as jest.Mock).mockResolvedValue(link)
+      ;(linksRepository.create as vi.Mock).mockResolvedValue(link)
 
       const result = await linksService.createLink({ url }, userId)
       expect(result).toEqual(link)
@@ -61,7 +62,7 @@ describe('LinksService', () => {
   describe('registerClick', () => {
     it('should register a click', async () => {
       const id = '1'
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(true)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(true)
 
       await linksService.registerClick(id)
       expect(linksRepository.findById).toHaveBeenCalledWith(id)
@@ -70,7 +71,7 @@ describe('LinksService', () => {
 
     it('should throw NotFoundException if link does not exist', async () => {
       const id = '1'
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(null)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(null)
 
       await expect(linksService.registerClick(id)).rejects.toThrow(
         NotFoundException,
@@ -84,7 +85,7 @@ describe('LinksService', () => {
       const links = [
         { id: '1', url: 'http://example.com', shortUrl: 'shortUrl', userId },
       ]
-      ;(linksRepository.userLinks as jest.Mock).mockResolvedValue(links)
+      ;(linksRepository.userLinks as vi.Mock).mockResolvedValue(links)
 
       const result = await linksService.getLinks(userId, { page: 1, limit: 10 })
       expect(result).toEqual(links)
@@ -105,8 +106,8 @@ describe('LinksService', () => {
         shortUrl: 'shortUrl',
         userId,
       }
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(link)
-      ;(linksRepository.delete as jest.Mock).mockResolvedValue(link)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(link)
+      ;(linksRepository.delete as vi.Mock).mockResolvedValue(link)
 
       const result = await linksService.deleteLink(id, userId)
       expect(result).toEqual(link)
@@ -117,7 +118,7 @@ describe('LinksService', () => {
     it('should throw NotFoundException if link does not exist', async () => {
       const id = '1'
       const userId = 'userId'
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(null)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(null)
 
       await expect(linksService.deleteLink(id, userId)).rejects.toThrow(
         NotFoundException,
@@ -133,7 +134,7 @@ describe('LinksService', () => {
         shortUrl: 'shortUrl',
         userId: 'otherUserId',
       }
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(link)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(link)
 
       await expect(linksService.deleteLink(id, userId)).rejects.toThrow(
         ForbiddenException,
@@ -153,8 +154,8 @@ describe('LinksService', () => {
         userId,
       }
       const updatedLink = { ...link, url }
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(link)
-      ;(linksRepository.update as jest.Mock).mockResolvedValue(updatedLink)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(link)
+      ;(linksRepository.update as vi.Mock).mockResolvedValue(updatedLink)
 
       const result = await linksService.updateLink(id, { url }, userId)
       expect(result).toEqual(updatedLink)
@@ -166,7 +167,7 @@ describe('LinksService', () => {
       const id = '1'
       const url = 'http://newexample.com'
       const userId = 'userId'
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(null)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(null)
 
       await expect(
         linksService.updateLink(id, { url }, userId),
@@ -183,7 +184,7 @@ describe('LinksService', () => {
         shortUrl: 'shortUrl',
         userId: 'otherUserId',
       }
-      ;(linksRepository.findById as jest.Mock).mockResolvedValue(link)
+      ;(linksRepository.findById as vi.Mock).mockResolvedValue(link)
 
       await expect(
         linksService.updateLink(id, { url }, userId),
