@@ -4,6 +4,7 @@ import { ConfigService } from 'src/modules'
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common'
 import { FastifyRequest } from 'fastify'
 import { z } from 'zod'
+import { describe, it, expect, beforeEach, vi} from 'vitest'
 
 describe('RtAuthGuard', () => {
   let rtAuthGuard: RtAuthGuard
@@ -25,13 +26,13 @@ describe('RtAuthGuard', () => {
       } as FastifyRequest & { token?: string; user?: any }
 
       const mockContext = {
-        switchToHttp: jest.fn().mockReturnValue({
-          getRequest: jest.fn().mockReturnValue(mockRequest),
+        switchToHttp: vi.fn().mockReturnValue({
+          getRequest: vi.fn().mockReturnValue(mockRequest),
         }),
       } as unknown as ExecutionContext
 
-      jest.spyOn(jwtService, 'verifyAsync').mockResolvedValue({ userId: 1 })
-      jest.spyOn(configService, 'get').mockReturnValue('secret')
+      vi.spyOn(jwtService, 'verifyAsync').mockResolvedValue({ userId: 1 })
+      vi.spyOn(configService, 'get').mockReturnValue('secret')
 
       const result = await rtAuthGuard.canActivate(mockContext)
 
@@ -48,15 +49,15 @@ describe('RtAuthGuard', () => {
       } as FastifyRequest
 
       const mockContext = {
-        switchToHttp: jest.fn().mockReturnValue({
-          getRequest: jest.fn().mockReturnValue(mockRequest),
+        switchToHttp: vi.fn().mockReturnValue({
+          getRequest: vi.fn().mockReturnValue(mockRequest),
         }),
       } as unknown as ExecutionContext
 
-      jest
+      vi
         .spyOn(jwtService, 'verifyAsync')
         .mockRejectedValue(new Error('Invalid token'))
-      jest.spyOn(configService, 'get').mockReturnValue('secret')
+      vi.spyOn(configService, 'get').mockReturnValue('secret')
 
       await expect(rtAuthGuard.canActivate(mockContext)).rejects.toThrow(
         UnauthorizedException,
@@ -69,8 +70,8 @@ describe('RtAuthGuard', () => {
       } as FastifyRequest
 
       const mockContext = {
-        switchToHttp: jest.fn().mockReturnValue({
-          getRequest: jest.fn().mockReturnValue(mockRequest),
+        switchToHttp: vi.fn().mockReturnValue({
+          getRequest: vi.fn().mockReturnValue(mockRequest),
         }),
       } as unknown as ExecutionContext
 

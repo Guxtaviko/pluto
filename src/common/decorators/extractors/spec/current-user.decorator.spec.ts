@@ -1,13 +1,14 @@
 import { ExecutionContext } from '@nestjs/common'
 import { CurrentUser, currentUserDecorator } from '../current-user.decorator'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 describe('CurrentUser Decorator', () => {
   let mockExecutionContext: ExecutionContext
 
   beforeEach(() => {
     mockExecutionContext = {
-      switchToHttp: jest.fn().mockReturnValue({
-        getRequest: jest.fn().mockReturnValue({
+      switchToHttp: vi.fn().mockReturnValue({
+        getRequest: vi.fn().mockReturnValue({
           user: {
             sub: '123',
             email: 'test@example.com',
