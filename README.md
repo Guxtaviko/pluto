@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Guxtaviko/pluto" target="blank">
-    <img src="https://github.com/user-attachments/assets/a21c98d9-8d80-4fe6-8e19-69bff4683a06" alt="Pluto" />
+    <img src="https://github.com/user-attachments/assets/42f1f51e-1fe3-4769-b3c4-d1b038da81a3" width=200 alt="Pluto" />
   </a>
 </div>
 
